@@ -1,0 +1,10 @@
+# worker/railway.toml
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "worker/Dockerfile"
+# The worker needs files from backend, so it runs builds from the repository root context
+watchPatterns = ["backend/pkg/**", "worker/**", "go.work"]
+
+[deploy]
+restartPolicyType = "ON_FAILURE"
+# The worker is a background consumer and does not expose ports, so no healthcheck path is needed

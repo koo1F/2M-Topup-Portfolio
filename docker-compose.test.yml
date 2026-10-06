@@ -1,0 +1,24 @@
+# Isolated infrastructure for local browser/API tests; no real credentials.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: payment_test
+    ports:
+      - '127.0.0.1:55432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user -d payment_test']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '127.0.0.1:56379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10

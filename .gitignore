@@ -1,0 +1,21 @@
+# Local credentials (keep templates)
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+
+# Generated files
+**/node_modules/
+**/.next/
+**/coverage/
+**/*.tsbuildinfo
+backend/server_bin
+worker/worker_bin
+*.exe
+*.log
+.DS_Store
+
+# Browser test output (screenshots in public/screenshots are intentional)
+frontend/test-results/
+frontend/playwright-report/

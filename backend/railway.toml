@@ -1,0 +1,10 @@
+# backend/railway.toml
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+watchPatterns = ["pkg/**", "cmd/server/**", "go.mod", "go.sum"]
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"

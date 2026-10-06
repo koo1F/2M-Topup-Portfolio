@@ -1,0 +1,76 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d payment_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/payment_db?sslmode=disable
+      REDIS_URL: redis:6379
+      PORT: 8080
+      PAYMENT_RATE_LIMIT: ${PAYMENT_RATE_LIMIT:-200}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_SUCCESS_URL: ${STRIPE_SUCCESS_URL:-http://localhost:3000/payment/success}
+      STRIPE_CANCEL_URL: ${STRIPE_CANCEL_URL:-http://localhost:3000/payment/cancel}
+      JWT_SECRET: ${JWT_SECRET:-local-development-jwt-secret-change-me}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-local-development-webhook-secret-change-me}
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/payment_db?sslmode=disable
+      REDIS_URL: redis:6379
+      JWT_SECRET: ${JWT_SECRET:-local-development-jwt-secret-change-me}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-local-development-webhook-secret-change-me}
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      API_URL: http://backend:8080
+
+volumes:
+  postgres_data:
+

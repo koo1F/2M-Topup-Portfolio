@@ -1,0 +1,11 @@
+# railway.toml (project root)
+# Used by the worker service which runs from the repository root directory
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "worker/Dockerfile"
+watchPatterns = ["backend/pkg/**", "worker/**", "go.work"]
+
+[deploy]
+restartPolicyType = "ON_FAILURE"
+

@@ -1,0 +1,10 @@
+# frontend/railway.toml
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+watchPatterns = ["app/**", "components/**", "proxy.ts", "package.json", "package-lock.json"]
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"
