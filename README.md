@@ -1,5 +1,7 @@
 # 2M-Topup
 
+[![CI](https://github.com/koo1F/2M-Topup-Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/koo1F/2M-Topup-Portfolio/actions/workflows/ci.yml)
+
 A fullstack wallet top-up demo built with **Next.js, TypeScript, Go, PostgreSQL, Redis, and Stripe**. Users can register, sign in, create a top-up, and view their wallet balance and transaction history. A separate Go worker processes payment webhooks asynchronously.
 
 This is a learning and portfolio project. Use Stripe test mode or a sandbox for demos. The payment flow and security controls have known limitations listed below; this project is not ready to handle real money.
@@ -94,7 +96,7 @@ Go and Node.js do not need to be installed on the host when using Docker.
 
 ```bash
 git clone https://github.com/koo1F/2M-Topup-Portfolio.git
-cd 2M-Topup
+cd 2M-Topup-Portfolio
 cp .env.example .env
 ```
 
